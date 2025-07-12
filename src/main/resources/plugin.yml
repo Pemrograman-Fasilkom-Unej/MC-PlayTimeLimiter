@@ -1,0 +1,17 @@
+name: PlayTimeLimiter
+main: com.darkun7.limiter.PlayTimeLimiter
+version: 1.0.0
+description: A flexible Minecraft plugin that limits daily playtime, tracks totals, rewards players, and penalizes deaths.
+
+api-version: 1.20
+commands:
+  playtime:
+    description: View or manage playtime
+    usage: /<command> [top|reset|set <player> <minutes>|hud]
+    permission: playtimelimiter.use
+
+permissions:
+  playtimelimiter.use:
+    default: true
+  playtimelimiter.admin:
+    default: op

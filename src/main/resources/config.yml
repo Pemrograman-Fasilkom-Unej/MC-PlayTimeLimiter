@@ -1,0 +1,43 @@
+limits:
+  default: 120
+
+hud:
+  interval-seconds: 10
+  scoreboard:
+    title: "&6⏳ PlayTime"
+    lines:
+      - "&fUsed: &e{used} &f/ &e{limit} min"
+      - "&aRemaining: &f{remaining} min"
+      - "&6Percent: &f{percent}%%"
+
+death:
+  penalty-minutes: 1
+  steal-minutes: 5
+
+rewards:
+  enabled: true
+
+  total:
+    "5":
+      command: "give %player% iron_ingot 3"
+      message: "You’ve received 3 Iron for playing 5 minutes!"
+    "60":
+      command: "give %player% golden_apple 1"
+      broadcast: "%player% has played 1 hours total!"
+    "600":
+      command: "give %player% totem_of_undying 1"
+      broadcast: "%player% just receive 1 Totem of Undying for 10 hour of total playtime!"
+
+  daily:
+    "5":
+      command: "give %player% potato 5"
+      message: "You’ve received 5 potatos for playing 5 minutes!"
+
+messages:
+  hud: "&ePlaytime: &f{used}/{limit} min ({percent}%%) - &a{remaining} min left"
+  kick: "&cYou have reached your daily playtime limit of &e{minutes}&c minutes."
+  warn75: "&6⚠️ You have used &f75%&6 of your daily playtime limit!"
+  warn90: "&6⏳ You are at &f90%&6 of your daily playtime limit, be prepared for real life!."
+  kill-reward: "&aYou gained &e{drain} &aminutes from killing {victim}."
+  kill-loss: "&cYou lost &e{drain} &cminutes to {killer}."
+  killed: "&cYou lost &e{reduce} &cminutes as a death penalty"
