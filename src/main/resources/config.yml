@@ -1,5 +1,6 @@
 limits:
   default: 120
+  weekend: 240
 
 hud:
   interval-seconds: 10
@@ -13,6 +14,9 @@ hud:
 death:
   penalty-minutes: 1
   steal-minutes: 5
+  progressive: true
+  progressive-increment: 1
+  progressive-limit: 5
 
 rewards:
   enabled: true

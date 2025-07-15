@@ -1,5 +1,6 @@
 package com.darkun7.limiter;
 
+import com.darkun7.limiter.api.PlayTimeLimiterAPI;
 import com.darkun7.limiter.command.PlaytimeCommand;
 import com.darkun7.limiter.command.PlaytimeTabCompleter;
 import com.darkun7.limiter.data.PlayerDataManager;
@@ -15,6 +16,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import java.util.UUID;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 public final class PlayTimeLimiter extends JavaPlugin {
 
@@ -22,6 +25,7 @@ public final class PlayTimeLimiter extends JavaPlugin {
     private static PlayerDataManager dataManager;
     private static RewardManager rewardManager;
     private static HUDManager hudManager;
+    private PlayTimeLimiterAPI api;
 
     public static PlayTimeLimiter getInstance() {
         return instance;
@@ -39,6 +43,10 @@ public final class PlayTimeLimiter extends JavaPlugin {
         return hudManager;
     }
 
+    public PlayTimeLimiterAPI getAPI() {
+        return this.api;
+    }
+
 
     @Override
     public void onEnable() {
@@ -48,6 +56,7 @@ public final class PlayTimeLimiter extends JavaPlugin {
         dataManager = new PlayerDataManager();
         rewardManager = new RewardManager();
         hudManager = new HUDManager();
+        this.api = new PlayTimeLimiterAPI(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEventListener(), this);
         getCommand("playtime").setExecutor(new PlaytimeCommand());
@@ -88,7 +97,11 @@ public final class PlayTimeLimiter extends JavaPlugin {
                     }
 
                     if (data.dailyUsed >= limit) {
-                        player.kick(MessageUtil.get("messages.kick", "&cDaily playtime limit reached!"));
+                        player.kick(MessageUtil.format(
+                            "messages.kick",
+                            "&cYou have reached your daily playtime limit of &e{minutes}&c minutes.",
+                            "minutes", String.valueOf(limit)
+                        ));
                     }
                 }
             }
@@ -96,12 +109,19 @@ public final class PlayTimeLimiter extends JavaPlugin {
     }
 
     public int getLimit(Player player) {
-        for (int i = 10000; i >= 1; i--) {
+        for (int i = 1440; i >= 1; i--) {
             if (player.hasPermission("playtime.limit." + i)) {
                 return i;
             }
         }
-        return getConfig().getInt("limits.default", 120);
+        LocalDate today = LocalDate.now();
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+        
+        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+            return getConfig().getInt("limits.default", 120);
+        } else {
+            return getConfig().getInt("limits.weekend", 240);
+        }  
     }
 
     public int getLimitByUUID(UUID uuid) {

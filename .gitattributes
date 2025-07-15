@@ -8,3 +8,5 @@
 *.bat           text eol=crlf
 
 # Binary files should be left untouched
+*.jar           binary
+

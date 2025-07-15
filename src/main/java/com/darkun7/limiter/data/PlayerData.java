@@ -10,6 +10,7 @@ public class PlayerData {
     public int totalUsed = 0;
     public boolean hudEnabled = true;
     public String hudType = "tablist"; // default value
+    public int dailyDeath = 0;
 
     public Set<Integer> dailyClaimed = new HashSet<>();
     public Set<Integer> totalClaimed = new HashSet<>();

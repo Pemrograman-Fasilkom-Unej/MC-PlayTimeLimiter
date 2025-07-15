@@ -32,6 +32,7 @@ public class PlayerDataManager {
             data.totalUsed = config.getInt("totalUsed", 0);
             data.hudEnabled = config.getBoolean("hudEnabled", false);
             data.hudType = config.getString("hudType", "tablist");
+            data.dailyDeath = config.getInt("dailyDeath", 0);
             data.dailyClaimed = new HashSet<>(config.getIntegerList("dailyClaimed"));
             data.totalClaimed = new HashSet<>(config.getIntegerList("totalClaimed"));
         }
@@ -42,6 +43,7 @@ public class PlayerDataManager {
             data.dailyUsed = 0;
             data.dailyClaimed.clear();
             data.lastLoginDate = today;
+            data.dailyDeath = 0;
         }
 
         dataMap.put(uuid, data);
@@ -59,6 +61,7 @@ public class PlayerDataManager {
         config.set("totalUsed", data.totalUsed);
         config.set("hudEnabled", data.hudEnabled);
         config.set("hudType", data.hudType);
+        config.set("dailyDeath", data.dailyDeath);
         config.set("dailyClaimed", new ArrayList<>(data.dailyClaimed));
         config.set("totalClaimed", new ArrayList<>(data.totalClaimed));
 

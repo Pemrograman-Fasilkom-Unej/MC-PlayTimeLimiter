@@ -30,8 +30,9 @@ public class PlaytimeCommand implements CommandExecutor {
             if (data == null) return true;
 
             int limit = PlayTimeLimiter.getInstance().getLimit(player);
-            player.sendMessage("§6Daily Used: §f" + data.dailyUsed + "§7/" + limit + " min");
-            player.sendMessage("§6Total Used: §f" + data.totalUsed + " min");
+            player.sendMessage("§6Daily used: §f" + data.dailyUsed + "§7/" + limit + " min");
+            player.sendMessage("§6Total used: §f" + data.totalUsed + " min");
+            player.sendMessage("§6Today death count: §f" + data.dailyDeath);
             return true;
         }
 
@@ -122,12 +123,13 @@ public class PlaytimeCommand implements CommandExecutor {
             }
 
             data.dailyUsed = 0;
-            data.totalUsed = 0;
+            // data.totalUsed = 0;
             data.dailyClaimed.clear();
-            data.totalClaimed.clear();
+            // data.totalClaimed.clear();
+            data.dailyDeath = 0;
             dataManager.savePlayer(uuid);
 
-            sender.sendMessage("§aPlaytime reset for " + target.getName());
+            sender.sendMessage("§aPlaytime reset for §f" + target.getName());
             return true;
         }
 
