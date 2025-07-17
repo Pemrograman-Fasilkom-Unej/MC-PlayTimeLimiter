@@ -72,11 +72,13 @@ A flexible Minecraft plugin that limits daily playtime, tracks total usage, rewa
 
 ## 🔥 API
 
-getDailyUsed(<UUID>)
-setDailyUsed(<UUID>, <int> minutes)
-getTotalUsed(<UUID>)
-reduceDailyUsed(<UUID>, <int> minutes)
-setDailyDeath(<UUID>, <int> count)
+```
+getDailyUsed([UUID])
+setDailyUsed([UUID[], [int] minutes)
+getTotalUsed([UUID])
+reduceDailyUsed([UUID], [int] minutes)
+setDailyDeath([UUID], [int] count)
+```
 
 ### How to use?
 
@@ -145,5 +147,3 @@ messages:
   kill-reward: "&aYou gained &e{drain} &aminutes from killing {victim}."
   kill-loss: "&cYou lost &e{drain} &cminutes to {killer}."
   killed: "&cYou lost &e{reduce} &cminutes as a death penalty"
-
-
