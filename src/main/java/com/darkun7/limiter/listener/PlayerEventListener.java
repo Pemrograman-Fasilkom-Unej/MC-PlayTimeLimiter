@@ -26,7 +26,6 @@ public class PlayerEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         dataManager.loadPlayer(event.getPlayer());
 
-        Bukkit.getLogger().info("[PlayTimeLimiter] player join.");
         Player player = event.getPlayer();
         PlayerData data = dataManager.getData(player.getUniqueId());
         if (data == null) return;
@@ -45,7 +44,6 @@ public class PlayerEventListener implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         dataManager.loadPlayer(event.getPlayer());
 
-        Bukkit.getLogger().info("[PlayTimeLimiter] player login.");
         UUID uuid = event.getPlayer().getUniqueId();
         PlayerData data = PlayTimeLimiter.getDataManager().getData(uuid);
 
@@ -74,14 +72,11 @@ public class PlayerEventListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Bukkit.getLogger().info("[PlayTimeLimiter] player quit.");
         dataManager.unloadPlayer(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        Bukkit.getLogger().info("[PlayTimeLimiter] player death.");
-
         Player victim = event.getEntity();
         PlayerData victimData = dataManager.getData(victim.getUniqueId());
         PlayerDataManager dataManager = PlayTimeLimiter.getDataManager();

@@ -4,6 +4,7 @@ import com.darkun7.limiter.PlayTimeLimiter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.*;
 public class PlayerDataManager {
 
     private final Map<UUID, PlayerData> dataMap = new HashMap<>();
+    private final Map<UUID, UUID> aliasMap = new HashMap<>(); // Bedrock UUID -> Java UUID
     private final File dataFolder;
 
     public PlayerDataManager() {
@@ -22,6 +24,24 @@ public class PlayerDataManager {
 
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
+        String name = player.getName();
+
+        // Check for an existing UUID with the same name (case-insensitive)
+        for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
+            if (offline.getName() != null && offline.getName().equalsIgnoreCase(name)) {
+                UUID existingUUID = offline.getUniqueId();
+                if (!existingUUID.equals(uuid)) {
+                    aliasMap.put(uuid, existingUUID); // map Bedrock -> Java
+                    loadPlayerByUUID(existingUUID); // Load Java data instead
+                    dataMap.put(uuid, dataMap.get(existingUUID)); // share the same data reference
+                    return;
+                }
+            }
+        }
+        loadPlayerByUUID(player.getUniqueId());
+    }
+
+    public void loadPlayerByUUID(UUID uuid) {
         File file = new File(dataFolder, uuid + ".yml");
 
         PlayerData data = new PlayerData(uuid);
@@ -49,6 +69,7 @@ public class PlayerDataManager {
         dataMap.put(uuid, data);
     }
 
+
     public void savePlayer(UUID uuid) {
         PlayerData data = dataMap.get(uuid);
         if (data == null) return;
@@ -72,13 +93,20 @@ public class PlayerDataManager {
         }
     }
 
+    public UUID resolveUUID(UUID uuid) {
+        return aliasMap.getOrDefault(uuid, uuid);
+    }
+
+
     public PlayerData getData(UUID uuid) {
-        return dataMap.get(uuid);
+        UUID resolved = aliasMap.getOrDefault(uuid, uuid);
+        return dataMap.get(resolved);
     }
 
     public void unloadPlayer(UUID uuid) {
+        UUID resolved = aliasMap.getOrDefault(uuid, uuid);
         savePlayer(uuid);
-        dataMap.remove(uuid);
+        dataMap.remove(resolved);
     }
 
     public void saveAll() {
@@ -86,7 +114,6 @@ public class PlayerDataManager {
             savePlayer(uuid);
         }
     }
-
 
     public Map<UUID, PlayerData> getDataMap() {
         return dataMap;

@@ -4,6 +4,7 @@ import com.darkun7.limiter.PlayTimeLimiter;
 import com.darkun7.limiter.data.PlayerData;
 import com.darkun7.limiter.data.PlayerDataManager;
 import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public class PlayTimeLimiterAPI {
     }
 
     public void setDailyUsed(UUID uuid, int minutes) {
+        Bukkit.getLogger().info("[PlayTimeLimiter] Set daily used on " + uuid + " to "+ minutes + "minutes");
         PlayerData data = dataManager.getData(uuid);
         if (data == null) {
             data = new PlayerData(uuid);
@@ -36,6 +38,7 @@ public class PlayTimeLimiterAPI {
     }
 
     public void reduceDailyUsed(UUID uuid, int minutes) {
+        Bukkit.getLogger().info("[PlayTimeLimiter] reduce daily used on " + uuid + " by "+ minutes + "minutes");
         PlayerData data = dataManager.getData(uuid);
         if (data == null) {
             data = new PlayerData(uuid);
@@ -46,6 +49,7 @@ public class PlayTimeLimiterAPI {
     }
 
     public void setDailyDeath(UUID uuid, int count) {
+        Bukkit.getLogger().info("[PlayTimeLimiter] Set death used on " + uuid + " to "+ count + "minutes");
         PlayerData data = dataManager.getData(uuid);
         if (data == null) {
             data = new PlayerData(uuid);
