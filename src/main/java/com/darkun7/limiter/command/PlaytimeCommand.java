@@ -88,10 +88,15 @@ public class PlaytimeCommand implements CommandExecutor {
 
             for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
                 UUID uuid = offline.getUniqueId();
-                dataManager.loadPlayerByUUID(uuid);
+                if (!offline.isOnline()) {
+                    dataManager.loadPlayerByUUID(uuid);
+                }
                 PlayerData data = dataManager.getData(uuid);
                 if (data != null) {
                     totals.put(uuid, data.totalUsed);
+                }
+                if (!offline.isOnline()) {
+                    dataManager.unloadPlayer(offline.getUniqueId());
                 }
             }
 
@@ -103,12 +108,6 @@ public class PlaytimeCommand implements CommandExecutor {
             for (Map.Entry<UUID, Integer> entry : sorted.subList(0, Math.min(10, sorted.size()))) {
                 String name = Bukkit.getOfflinePlayer(entry.getKey()).getName();
                 sender.sendMessage("§7" + i++ + ". §f" + name + " §8- §b" + entry.getValue() + " min");
-            }
-
-            for (OfflinePlayer offline : Bukkit.getOfflinePlayers()) {
-                if (!offline.isOnline()) {
-                    dataManager.unloadPlayer(offline.getUniqueId());
-                }
             }
 
             return true;
