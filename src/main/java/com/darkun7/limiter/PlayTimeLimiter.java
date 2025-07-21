@@ -127,7 +127,15 @@ public final class PlayTimeLimiter extends JavaPlugin {
     public int getLimitByUUID(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) return getLimit(player);
-        return getConfig().getInt("default-limit", 120); // fallback limit
+        
+        LocalDate today = LocalDate.now();
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+        
+        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
+            return getConfig().getInt("limits.default", 120);
+        } else {
+            return getConfig().getInt("limits.weekend", 240);
+        }  
     }
 
 
