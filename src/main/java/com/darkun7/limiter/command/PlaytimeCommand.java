@@ -31,6 +31,7 @@ public class PlaytimeCommand implements CommandExecutor {
 
             int limit = PlayTimeLimiter.getInstance().getLimit(player);
             player.sendMessage("§6Daily used: §f" + data.dailyUsed + "§7/" + limit + " min");
+            player.sendMessage("§6Daily extra: §f" + data.dailyExtra + " min");
             player.sendMessage("§6Total used: §f" + data.totalUsed + " min");
             player.sendMessage("§6Today death count: §f" + data.dailyDeath);
             return true;
@@ -81,6 +82,39 @@ public class PlaytimeCommand implements CommandExecutor {
             return true;
         }
 
+        // /playtime grant <player> <minutes>
+        if (args.length == 3 && args[0].equalsIgnoreCase("grant")) {
+            Player player = (Player) sender;
+            PlayerData selfData = dataManager.getData(player.getUniqueId());
+            OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+            int mins;
+            try {
+                mins = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("§cInvalid minutes.");
+                return true;
+            }
+            if (mins > selfData.dailyExtra) {
+                sender.sendMessage("§cMax limit based on extra time (" + selfData.dailyExtra + ").");
+                return true;
+            }
+
+            UUID uuid = target.getUniqueId();
+            PlayerData data = dataManager.getData(uuid);
+            if (data == null) {
+                data = new PlayerData(uuid);
+                dataManager.getDataMap().put(uuid, data);
+            }
+
+            data.dailyExtra += mins;
+            selfData.dailyExtra -= mins;
+            dataManager.savePlayer(uuid);
+            sender.sendMessage("§aGrant §f " + mins + "§a minutes extra time today to §f" + target.getName() + "§a.");
+            if (target.isOnline()) {
+                ((Player) target).sendMessage("§b" + player.getName() + "§a sent you §f" + mins + "§a minutes extra time today.");
+            }
+            return true;
+        }
 
         // /playtime top
         if (args.length == 1 && args[0].equalsIgnoreCase("top")) {
@@ -130,6 +164,7 @@ public class PlaytimeCommand implements CommandExecutor {
             }
 
             data.dailyUsed = 0;
+            data.dailyExtra = 0;
             // data.totalUsed = 0;
             data.dailyClaimed.clear();
             // data.totalClaimed.clear();
@@ -191,14 +226,16 @@ public class PlaytimeCommand implements CommandExecutor {
             return true;
         }
 
-
         sender.sendMessage("§cUsage:");
         sender.sendMessage("§e/playtime §7- Check your time");
         sender.sendMessage("§e/playtime hud §7- Toggle HUD");
+        sender.sendMessage("§e/playtime grant <player> <minutes> §7- Transfer extra time");
         sender.sendMessage("§e/playtime top §7- Top playtime");
-        sender.sendMessage("§e/playtime reset <player>");
-        sender.sendMessage("§e/playtime reload §7- Reload config");
-        sender.sendMessage("§e/playtime set <player> <minutes>");
+        if (sender.hasPermission("playtimelimiter.admin")) {
+            sender.sendMessage("§e/playtime reset <player>");
+            sender.sendMessage("§e/playtime reload §7- Reload config");
+            sender.sendMessage("§e/playtime set <player> <minutes>");
+        }
         return true;
     }
 }

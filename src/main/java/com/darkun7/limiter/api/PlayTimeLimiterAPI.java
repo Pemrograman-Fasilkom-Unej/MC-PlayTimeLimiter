@@ -22,7 +22,7 @@ public class PlayTimeLimiterAPI {
     }
 
     public void setDailyUsed(UUID uuid, int minutes) {
-        Bukkit.getLogger().info("[PlayTimeLimiter] Set daily used on " + uuid + " to "+ minutes + "minutes");
+        Bukkit.getLogger().info("[PlayTimeLimiter] Set daily used time on " + uuid + " to "+ minutes + "minutes");
         PlayerData data = dataManager.getData(uuid);
         if (data == null) {
             data = new PlayerData(uuid);
@@ -32,19 +32,41 @@ public class PlayTimeLimiterAPI {
         dataManager.savePlayer(uuid);
     }
 
+    public void setDailyExtra(UUID uuid, int minutes) {
+        Bukkit.getLogger().info("[PlayTimeLimiter] Set daily extra time on " + uuid + " to "+ minutes + "minutes");
+        PlayerData data = dataManager.getData(uuid);
+        if (data == null) {
+            data = new PlayerData(uuid);
+            dataManager.getDataMap().put(uuid, data);
+        }
+        data.dailyExtra = minutes;
+        dataManager.savePlayer(uuid);
+    }
+
     public int getTotalUsed(UUID uuid) {
         PlayerData data = dataManager.getData(uuid);
         return data != null ? data.totalUsed : -1;
     }
 
     public void reduceDailyUsed(UUID uuid, int minutes) {
-        Bukkit.getLogger().info("[PlayTimeLimiter] reduce daily used on " + uuid + " by "+ minutes + "minutes");
+        Bukkit.getLogger().info("[PlayTimeLimiter] reduce daily used time on " + uuid + " by "+ minutes + "minutes");
         PlayerData data = dataManager.getData(uuid);
         if (data == null) {
             data = new PlayerData(uuid);
             dataManager.getDataMap().put(uuid, data);
         }
         data.dailyUsed = Math.max(0, data.dailyUsed - minutes);
+        dataManager.savePlayer(uuid);
+    }
+
+    public void addDailyExtra(UUID uuid, int minutes) {
+        Bukkit.getLogger().info("[PlayTimeLimiter] add daily textra time used on " + uuid + " by "+ minutes + "minutes");
+        PlayerData data = dataManager.getData(uuid);
+        if (data == null) {
+            data = new PlayerData(uuid);
+            dataManager.getDataMap().put(uuid, data);
+        }
+        data.dailyExtra = Math.max(0, data.dailyExtra + minutes);
         dataManager.savePlayer(uuid);
     }
 

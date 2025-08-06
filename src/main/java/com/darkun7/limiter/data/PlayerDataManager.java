@@ -49,6 +49,7 @@ public class PlayerDataManager {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             data.lastLoginDate = config.getString("lastLoginDate", "");
             data.dailyUsed = config.getInt("dailyUsed", 0);
+            data.dailyExtra = config.getInt("dailyExtra", 0);
             data.totalUsed = config.getInt("totalUsed", 0);
             data.hudEnabled = config.getBoolean("hudEnabled", false);
             data.hudType = config.getString("hudType", "tablist");
@@ -61,6 +62,7 @@ public class PlayerDataManager {
         String today = LocalDate.now().toString();
         if (!today.equals(data.lastLoginDate)) {
             data.dailyUsed = 0;
+            data.dailyExtra = 0;
             data.dailyClaimed.clear();
             data.lastLoginDate = today;
             data.dailyDeath = 0;
@@ -79,6 +81,7 @@ public class PlayerDataManager {
 
         config.set("lastLoginDate", data.lastLoginDate);
         config.set("dailyUsed", data.dailyUsed);
+        config.set("dailyExtra", data.dailyExtra);
         config.set("totalUsed", data.totalUsed);
         config.set("hudEnabled", data.hudEnabled);
         config.set("hudType", data.hudType);

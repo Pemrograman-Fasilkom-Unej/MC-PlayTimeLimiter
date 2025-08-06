@@ -7,6 +7,7 @@ import java.util.UUID;
 public class PlayerData {
     public UUID uuid;
     public int dailyUsed = 0;
+    public int dailyExtra = 0;
     public int totalUsed = 0;
     public boolean hudEnabled = true;
     public String hudType = "tablist"; // default value

@@ -18,7 +18,7 @@ public class PlaytimeTabCompleter implements TabCompleter {
         String[] args
     ) {
         if (args.length == 1) {
-            return Arrays.asList("top", "reset", "set", "hud", "reload");
+            return Arrays.asList("top", "hud", "grant" ,"set", "reset", "reload");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("hud")) {
@@ -29,7 +29,15 @@ public class PlaytimeTabCompleter implements TabCompleter {
             return null; // Bukkit will suggest player names
         }
 
+        if (args.length == 2 && args[0].equalsIgnoreCase("grant")) {
+            return null; // Bukkit will suggest player names
+        }
+
         if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
+            return Collections.singletonList("<minutes>");
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("grant")) {
             return Collections.singletonList("<minutes>");
         }
 

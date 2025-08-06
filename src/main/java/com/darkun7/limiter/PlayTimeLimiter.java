@@ -109,34 +109,46 @@ public final class PlayTimeLimiter extends JavaPlugin {
     }
 
     public int getLimit(Player player) {
+        UUID uuid = player.getUniqueId();
+        var data = dataManager.getData(uuid);
+        int defaultLimit = getDefaultLimit();
+
+        if (data == null) {
+            return defaultLimit;
+        }
+
         for (int i = 1440; i >= 1; i--) {
             if (player.hasPermission("playtime.limit." + i)) {
-                return i;
+                return i + data.dailyExtra;
             }
         }
-        LocalDate today = LocalDate.now();
-        DayOfWeek dayOfWeek = today.getDayOfWeek();
-        
-        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
-            return getConfig().getInt("limits.default", 120);
-        } else {
-            return getConfig().getInt("limits.weekend", 240);
-        }  
+
+        return defaultLimit + data.dailyExtra;
     }
 
     public int getLimitByUUID(UUID uuid) {
+        var data = dataManager.getData(uuid);
+        int defaultLimit = getDefaultLimit();
+
+        if (data == null) {
+            return defaultLimit;
+        }
+
         Player player = Bukkit.getPlayer(uuid);
-        if (player != null) return getLimit(player);
-        
-        LocalDate today = LocalDate.now();
-        DayOfWeek dayOfWeek = today.getDayOfWeek();
-        
-        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
-            return getConfig().getInt("limits.default", 120);
-        } else {
-            return getConfig().getInt("limits.weekend", 240);
-        }  
+        if (player != null) {
+            return getLimit(player);
+        }
+
+        return defaultLimit + data.dailyExtra;
     }
 
+    private int getDefaultLimit() {
+        DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
+        boolean isWeekend = dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+        return getConfig().getInt(
+            isWeekend ? "limits.weekend" : "limits.default",
+            isWeekend ? 240 : 120
+        );
+    }
 
 }
